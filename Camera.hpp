@@ -9,9 +9,6 @@ class Camera
     point3 eye;
     point3 at;
     point3 up;
-    double angle;
-    double offset;
-    double distance;
 
     Camera(point3, point3, point3);
     void set();
