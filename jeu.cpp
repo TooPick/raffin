@@ -1,9 +1,9 @@
 /*
- *	Tableau des points permettant de gérer les points de controles
- * On sélectionne le point en se déplaçant avec + et -, ...
- * On sélectionne ensuite si on veut faire monter, descendre amener vers la gauche ou la droite le point.
- *   d : translation à droite
- *   q : à gauche
+ *	Tableau des points permettant de gï¿½rer les points de controles
+ * On sï¿½lectionne le point en se dï¿½plaï¿½ant avec + et -, ...
+ * On sï¿½lectionne ensuite si on veut faire monter, descendre amener vers la gauche ou la droite le point.
+ *   d : translation ï¿½ droite
+ *   q : ï¿½ gauche
  *   z : en haut
  *   s : en bas
  *
@@ -17,7 +17,7 @@
 // Compilation sous MacOS :
 //   g++ -framework GLUT -framework OpenGL jeu.cpp -o jeu.exe
 ///////////////////////////////////////////////////////////////////////////////
- 
+
 
 #ifdef __APPLE__
 //compilation sous MacOs par :
@@ -28,14 +28,14 @@
 #endif
 
 #ifdef __WIN32__
-//parce qu'il manque des choses aux gens qui utilisent MsWindows, où OpenGL ne peut fonctionner que s'il discute avec le gestionnaire de fenêtres ("windows.h")
-	#define GLUT_DISABLE_ATEXIT_HACK	//utile si vous compilez en g++ sous windows avec le glut.lib prévu pour MsVisual
+//parce qu'il manque des choses aux gens qui utilisent MsWindows, oï¿½ OpenGL ne peut fonctionner que s'il discute avec le gestionnaire de fenï¿½tres ("windows.h")
+	#define GLUT_DISABLE_ATEXIT_HACK	//utile si vous compilez en g++ sous windows avec le glut.lib prï¿½vu pour MsVisual
 	#include <windows.h>
-	#include "glut.h"	//il faut avoir le fichier "glut.h" dans le même répertoire que votre .cpp (et aussi le glut.lib et le glut.dll)
+	#include "glut.h"	//il faut avoir le fichier "glut.h" dans le mï¿½me rï¿½pertoire que votre .cpp (et aussi le glut.lib et le glut.dll)
 #endif
 
 #ifdef __linux__
-	//pour les non-windowiens, GLUT (fenêtrage opengl) est inclu dans les distributions
+	//pour les non-windowiens, GLUT (fenï¿½trage opengl) est inclu dans les distributions
 	//pour les ubuntiens : apt-get install freeglut3 freeglut3-dev
 	#include <GL/glut.h>
 #endif
@@ -46,6 +46,9 @@
 #include <cstdio>
 #include <cmath>
 
+#include "struct.h"
+#include "Camera.hpp"
+
 using namespace std;
 
 #define ESC 27
@@ -54,6 +57,15 @@ float x = 0;
 float y = 0;
 float z = 0;
 bool sens = 0;
+
+double z_eye = 5;
+
+point3 eye(10,0,z_eye);
+point3 at(0,0,0);
+point3 up(0,1,0);
+
+Camera camera(eye, at, up);
+
 
 void affiche_paquet( float xp, float yp, float zp, float yr )
 {
@@ -85,7 +97,7 @@ void affiche_paquet( float xp, float yp, float zp, float yr )
 		glVertex3d(largeur, 0, profondeur);
 		glVertex3d(largeur, hauteur, profondeur);
 		glVertex3d(0, hauteur, profondeur);
-		
+
 		glVertex3d(largeur, 0, 0);
 		glVertex3d(largeur, hauteur, 0);
 		glVertex3d(largeur, hauteur, profondeur);
@@ -95,7 +107,7 @@ void affiche_paquet( float xp, float yp, float zp, float yr )
 		glVertex3d(largeur, 0, 0);
 		glVertex3d(largeur, 0, profondeur);
 		glVertex3d(0, 0, profondeur);
-		
+
 		glVertex3d(0, hauteur, profondeur);
 		glVertex3d(largeur, hauteur, profondeur);
 		glVertex3d(largeur, hauteur, 0);
@@ -122,7 +134,7 @@ void affiche_paquet( float xp, float yp, float zp, float yr )
 		glVertex3d(largeur, hauteur, profondeur);
 		glVertex3d(largeur, hauteur+hauteurB, profondeur);
 		glVertex3d(0, hauteur+hauteurB, profondeur);
-		
+
 		glVertex3d(largeur, hauteur, 0);
 		glVertex3d(largeur, hauteur+hauteurB, 0);
 		glVertex3d(largeur, hauteur+hauteurB, profondeur);
@@ -132,7 +144,7 @@ void affiche_paquet( float xp, float yp, float zp, float yr )
 		glVertex3d(largeur, hauteur, 0);
 		glVertex3d(largeur, hauteur, profondeur);
 		glVertex3d(0, hauteur, profondeur);
-		
+
 		glVertex3d(0, hauteur+hauteurB, profondeur);
 		glVertex3d(largeur, hauteur+hauteurB, profondeur);
 		glVertex3d(largeur, hauteur+hauteurB, 0);
@@ -153,12 +165,16 @@ void affiche_balle( float xp, float yp, float zp, float yr )
 
 	glutSolidSphere(0.5, 50, 50);
 
-	glPopMatrix();		
+	glPopMatrix();
 }
 
 void affiche_scene()
 {
-	
+  z_eye++;
+  point3 neweye(10,0, z_eye);
+  camera.update(neweye, at, up);
+  cout << z_eye << endl;
+  camera.set();
 	affiche_paquet( x, y, z, 0);
 	/*
 	for(unsigned int i=0; i < balles.size(); i++)
@@ -167,12 +183,13 @@ void affiche_scene()
 		cout << "Balle : X=" << balles[i].x << " | Y=" << balles[i].y << " | Z=" << balles[i].z << endl;
 	}
 	*/
-	glutSwapBuffers();							// Affiche la scène à l'écran (affichage en double buffer)
+	glutSwapBuffers();							// Affiche la scï¿½ne ï¿½ l'ï¿½cran (affichage en double buffer)
 }
 
 /* initialisation d'OpenGL*/
 static void init() {
-	
+
+
 }
 
 /* Dessin */
@@ -180,16 +197,16 @@ void display(void) {
 
 	// On efface les pixels de l'image (color buffer) et le Z-Buffer (depth buffer).
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	// On initialise la matrice de vue avec la matrice identité.
+
+	// On initialise la matrice de vue avec la matrice identitï¿½.
 	glLoadIdentity();
 
-	// On affiche la scène.
+	// On affiche la scï¿½ne.
 	affiche_scene();
 
-	// On force OpenGL à afficher avant de passer à la suite.
+	// On force OpenGL ï¿½ afficher avant de passer ï¿½ la suite.
 	glFlush();
-	
+
 }
 
 /* Au cas ou la fenetre est modifiee ou deplacee */
@@ -205,7 +222,7 @@ void reshape(int w, int h)
 
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
-	
+
 
 	case ESC:
 		exit(0);
