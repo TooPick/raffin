@@ -50,6 +50,11 @@ using namespace std;
 
 #define ESC 27
 
+float x = 0;
+float y = 0;
+float z = 0;
+bool sens = 0;
+
 void affiche_paquet( float xp, float yp, float zp, float yr )
 {
 	glPushMatrix();										// Sauve la matrice de vue actuelle
@@ -153,8 +158,8 @@ void affiche_balle( float xp, float yp, float zp, float yr )
 
 void affiche_scene()
 {
-	affiche_paquet( 0, 0, 0, 0);
-
+	
+	affiche_paquet( x, y, z, 0);
 	/*
 	for(unsigned int i=0; i < balles.size(); i++)
 	{
@@ -214,6 +219,11 @@ void keyboard(unsigned char key, int x, int y) {
 glutPostRedisplay();
 }
 
+void idle()
+{
+	x+=0.001f;
+}
+
 int main(int argc, char **argv) {
 	glutInitWindowSize(400, 400);
 	glutInit(&argc, argv);
@@ -225,6 +235,7 @@ int main(int argc, char **argv) {
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
+	glutIdleFunc(&idle);
 	glutMainLoop();
 
 	return(EXIT_SUCCESS);
