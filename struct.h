@@ -1,3 +1,6 @@
+#ifndef point3_HPP
+#define point3_HPP
+
 #include <iostream>
 using namespace std ;
 
@@ -44,4 +47,4 @@ public:
 	friend istream& operator>>(istream&, point3 &);
 
 };
-
+#endif
