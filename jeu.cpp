@@ -59,7 +59,7 @@ float y = 0;
 float z = 0;
 bool sens = 0;
 float vitesse = 0.005f;
-float vitesseBalle = 0.01f;
+float vitesseBalle = 0.05f;
 
 struct balle{
 	float x,y,z;
@@ -297,7 +297,7 @@ void idle()
 	//Mouvement balles
 	for(unsigned int i = 0; i < balles.size(); i++)
 	{
-		if(balles[i].z >= 50)
+		if(balles[i].z <= -100)
 		{
 			balles.erase(balles.begin()+i);
 			cout << "Balle n" << i << " détruite !" << endl;
