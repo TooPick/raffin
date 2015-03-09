@@ -45,6 +45,7 @@
 
 #include <cstdio>
 #include <cmath>
+#include <vector>
 
 #include "struct.h"
 #include "Camera.hpp"
@@ -57,6 +58,14 @@ float x = 0;
 float y = 0;
 float z = 0;
 bool sens = 0;
+float vitesse = 0.005f;
+
+struct balle{
+	float x,y,z;
+};
+
+vector<balle> balles;
+int nbBalle = 0;
 
 double z_eye = 5;
 
@@ -70,7 +79,7 @@ Camera camera(eye, at, up);
 void affiche_paquet( float xp, float yp, float zp, float yr )
 {
 	glPushMatrix();										// Sauve la matrice de vue actuelle
-	glTranslatef(xp, yp, zp);							// Positionne la maison avec une translation
+	glTranslatef(xp-2.75f, yp, zp);							// Positionne la maison avec une translation
 	glRotatef(yr, 0,0,0);								// et une rotation
 
 	GLdouble hauteurB = 2.5;
@@ -170,20 +179,22 @@ void affiche_balle( float xp, float yp, float zp, float yr )
 
 void affiche_scene()
 {
-  z_eye++;
+  z_eye += 0.005;
   point3 neweye(10,0, z_eye);
   camera.update(neweye, at, up);
   cout << z_eye << endl;
   camera.set();
 	affiche_paquet( x, y, z, 0);
-	/*
-	for(unsigned int i=0; i < balles.size(); i++)
-	{
-		affiche_balle(balles[i].x, balles[i].y, balles[i].z, 0);
-		cout << "Balle : X=" << balles[i].x << " | Y=" << balles[i].y << " | Z=" << balles[i].z << endl;
-	}
-	*/
-	glutSwapBuffers();							// Affiche la scï¿½ne ï¿½ l'ï¿½cran (affichage en double buffer)
+
+	// for(unsigned int i=0; i < balles.size(); i++)
+	// {
+	// 	affiche_balle(balles[i].x, balles[i].y, balles[i].z, 0);
+	// 	//cout << "Balle : X=" << balles[i].x << " | Y=" << balles[i].y << " | Z=" << balles[i].z << endl;
+	// }
+
+
+	glutSwapBuffers();							// Affiche la scène à l'écran (affichage en double buffer)
+
 }
 
 /* initialisation d'OpenGL*/
@@ -228,6 +239,15 @@ void keyboard(unsigned char key, int x, int y) {
 		exit(0);
 		break;
 
+	case 116:
+		balle b;
+		b.x = 0;
+		b.y = 0;
+		b.z = -15;
+		balles.push_back(b);
+		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
+		break;
+
 	default :
 		break;
 
@@ -238,7 +258,48 @@ glutPostRedisplay();
 
 void idle()
 {
-	x+=0.001f;
+	// //Mouvement cible
+	// if(sens == 0 && x < 10)
+	// {
+	// 	x+=vitesse;
+	// }
+	// else if(sens == 0 && x >= 10)
+	// {
+	// 	sens = 1;
+	// }
+	// else if(sens == 1 && x > -10)
+	// {
+	// 	x-=vitesse;
+	// }
+	// else if(sens == 1 && x <= -10)
+	// {
+	// 	sens = 0;
+	// }
+
+	//Mouvement balles
+	for(unsigned int i = 0; i < balles.size(); i++)
+	{
+		if(balles[i].z >= 50)
+		{
+			balles.erase(balles.begin()+i);
+			cout << "Balle n" << i << " détruite !" << endl;
+		}
+		balles[i].z+=vitesse;
+	}
+	glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y)
+{
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		balle b;
+		b.x = x;
+		b.y = y;
+		b.z = -15;
+		balles.push_back(b);
+		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
+	}
 }
 
 int main(int argc, char **argv) {
@@ -252,6 +313,7 @@ int main(int argc, char **argv) {
 	glutReshapeFunc(reshape);
 	glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
+	glutMouseFunc(&mouse);
 	glutIdleFunc(&idle);
 	glutMainLoop();
 
