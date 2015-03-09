@@ -197,7 +197,6 @@ void affiche_scene()
   z_eye += 0.005;
   point3 neweye(z_eye,10, z_eye);
   camera.update(neweye, at, up);
-  cout << z_eye << endl;
   camera.set();
 	affiche_paquet( x, y, z, 0);
 
@@ -312,9 +311,9 @@ void mouse(int button, int state, int x, int y)
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		balle b;
-		b.x = x;
-		b.y = y;
-		b.z = -15;
+		b.x = camera.eye.x;
+		b.y = camera.eye.y;
+		b.z = camera.eye.z;
 		balles.push_back(b);
 		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
 	}
