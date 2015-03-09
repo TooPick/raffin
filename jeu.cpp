@@ -56,7 +56,7 @@ using namespace std;
 
 float x = 0;
 float y = 0;
-float z = 0;
+float z = -10.0f;
 bool sens = 0;
 float vitesse = 0.005f;
 float vitesseBalle = 0.1f;
@@ -269,7 +269,7 @@ void keyboard(unsigned char key, int x, int y) {
 		b.y = 0;
 		b.z = 0;
 		balles.push_back(b);
-		cout << "Balle nï¿½" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
+		//cout << "Balle nï¿½" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
 		break;
 
 	default :
@@ -282,23 +282,23 @@ glutPostRedisplay();
 
 void idle()
 {
-	// //Mouvement cible
-	// if(sens == 0 && x < 10)
-	// {
-	// 	x+=vitesse;
-	// }
-	// else if(sens == 0 && x >= 10)
-	// {
-	// 	sens = 1;
-	// }
-	// else if(sens == 1 && x > -10)
-	// {
-	// 	x-=vitesse;
-	// }
-	// else if(sens == 1 && x <= -10)
-	// {
-	// 	sens = 0;
-	// }
+	//Mouvement cible
+	if(sens == 0 && x < 10)
+	{
+		x+=vitesse;
+	}
+	else if(sens == 0 && x >= 10)
+	{
+		sens = 1;
+	}
+	else if(sens == 1 && x > -10)
+	{
+		x-=vitesse;
+	}
+	else if(sens == 1 && x <= -10)
+	{
+		sens = 0;
+	}
 
 	//Mouvement balles
 	for(unsigned int i = 0; i < balles.size(); i++)
@@ -306,12 +306,12 @@ void idle()
 		if(balles[i].z <= -100)
 		{
 			balles.erase(balles.begin()+i);
-			cout << "Balle n" << i << " dï¿½truite !" << endl;
+			//cout << "Balle n" << i << " dï¿½truite !" << endl;
 		}
 		//balles[i].x+=vitesseBalle;
 		//balles[i].y+=vitesseBalle;
 		balles[i].z-=vitesseBalle;
-		cout << "Balle n°" << i << " | X=" << balles[i].x << " Y=" << balles[i].y << " Z=" << balles[i].z << endl;
+		//cout << "Balle n°" << i << " | X=" << balles[i].x << " Y=" << balles[i].y << " Z=" << balles[i].z << endl;
 	}
 	glutPostRedisplay();
 }
@@ -322,14 +322,14 @@ void mouse(int button, int state, int x, int y)
 	{
 
 		balle b;
-		b.x = 2*(camera.at.x-camera.eye.x);
+		b.x = camera.at.x-camera.eye.x;
 		b.y = camera.at.y-camera.eye.y;
 		b.z = camera.at.z-camera.eye.z;
 		balles.push_back(b);
 
 		point3 pt = point3(camera.at.x-camera.eye.x, camera.at.y-camera.eye.y, camera.at.z-camera.eye.z);
 		vecteurB.push_back(pt);
-		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
+		//cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
 	}
 }
 
@@ -341,25 +341,25 @@ GLvoid callback_motion(int x, int y)
 	if(x > w/2)
 	{
 		x_at+=vSouris;
-		cout << "x++" << endl;
+		//cout << "x++" << endl;
 		glutWarpPointer( w / 2, h / 2 );
 	}
 	else if(x < w/2)
 	{
 		x_at-=vSouris;
-		cout << "x--" << endl;
+		//cout << "x--" << endl;
 		glutWarpPointer( w / 2, h / 2 );
 	}
 	else if(y < h/2)
 	{
 		y_at+=vSouris;
-		cout << "y++" << endl;
+		//cout << "y++" << endl;
 		glutWarpPointer( w / 2, h / 2 );
 	}
 	else if(y > h/2)
 	{
 		y_at-=vSouris;
-		cout << "y--" << endl;
+		//cout << "y--" << endl;
 		glutWarpPointer( w / 2, h / 2 );
 	}
 
