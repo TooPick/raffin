@@ -64,16 +64,29 @@ struct balle{
 	float x,y,z;
 };
 
+float width = 400;
+float height = 400;
+
 vector<balle> balles;
 int nbBalle = 0;
 
 double z_eye = 5;
 
-point3 eye(10,0,z_eye);
+point3 eye(10, 5,z_eye);
 point3 at(0,0,0);
 point3 up(0,1,0);
 
 Camera camera(eye, at, up);
+
+GLvoid initGL()
+{
+	glClearColor(0, 0, 0, 1);							// Couleur servant à effacer la fenêtre (noir)
+    glShadeModel(GL_SMOOTH);							// Modèle d'ombrage : lissage de Gouraud
+	glEnable(GL_CULL_FACE);								// Ne traite pas les faces cachées
+	glEnable(GL_DEPTH_TEST);							// Active le Z-Buffer
+	glDepthFunc(GL_LEQUAL);								// Mode de fonctionnement du Z-Buffer
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Active la correction de perspective (pour ombrage, texture, ...)
+}
 
 
 void affiche_paquet( float xp, float yp, float zp, float yr )
@@ -180,7 +193,7 @@ void affiche_balle( float xp, float yp, float zp, float yr )
 void affiche_scene()
 {
   z_eye += 0.005;
-  point3 neweye(10,0, z_eye);
+  point3 neweye(z_eye,10, z_eye);
   camera.update(neweye, at, up);
   cout << z_eye << endl;
   camera.set();
@@ -226,9 +239,11 @@ void reshape(int w, int h)
    glViewport(0, 0, (GLsizei) w, (GLsizei) h);
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   glOrtho(-20.0f, 20.0f, -20.0f, 20.0f, -10.0f, 10.0f);
+   gluPerspective(45.0f,(GLfloat)width/(GLfloat)height,0.1f,1000.0f);
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
+
+
 }
 
 void keyboard(unsigned char key, int x, int y) {
