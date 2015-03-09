@@ -69,6 +69,7 @@ float width = 400;
 float height = 400;
 
 vector<balle> balles;
+vector<point3> vecteurB;
 int nbBalle = 0;
 
 double z_eye = 5;
@@ -193,11 +194,10 @@ void affiche_balle( float xp, float yp, float zp, float yr )
 
 void affiche_scene()
 {
-
   z_eye += 0.005;
   point3 neweye(z_eye,10, z_eye);
   camera.update(neweye, at, up);
-  cout << z_eye << endl;
+  //cout << z_eye << endl;
   camera.set();
 	affiche_paquet( x, y, z, 0);
 
@@ -302,7 +302,9 @@ void idle()
 			balles.erase(balles.begin()+i);
 			cout << "Balle n" << i << " détruite !" << endl;
 		}
+		balles[i].x-=vitesseBalle;
 		balles[i].z-=vitesseBalle;
+		cout << "Balle n°" << i << " | X=" << balles[i].x << " Y=" << balles[i].y << " Z=" << balles[i].z << endl;
 	}
 	glutPostRedisplay();
 }
@@ -312,10 +314,13 @@ void mouse(int button, int state, int x, int y)
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 		balle b;
-		b.x = x;
-		b.y = y;
-		b.z = -15;
+		b.x = camera.at.x-camera.eye.x;
+		b.y = camera.at.y-camera.eye.y;
+		b.z = camera.at.z-camera.eye.z;
 		balles.push_back(b);
+
+		point3 pt = point3(camera.at.x-camera.eye.x, camera.at.y-camera.eye.y, camera.at.z-camera.eye.z);
+		vecteurB.push_back(pt);
 		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
 	}
 }
