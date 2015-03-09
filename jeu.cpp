@@ -73,6 +73,10 @@ int nbBalle = 0;
 
 double z_eye = 5;
 
+double x_at = 0;
+double y_at = 0;
+double z_at = 0;
+
 point3 eye(10, 5,z_eye);
 point3 at(0,0,0);
 point3 up(0,1,0);
@@ -81,9 +85,9 @@ Camera camera(eye, at, up);
 
 GLvoid initGL()
 {
-	glClearColor(0, 0, 0, 1);							// Couleur servant à effacer la fenêtre (noir)
-    glShadeModel(GL_SMOOTH);							// Modèle d'ombrage : lissage de Gouraud
-	glEnable(GL_CULL_FACE);								// Ne traite pas les faces cachées
+	glClearColor(0, 0, 0, 1);							// Couleur servant ï¿½ effacer la fenï¿½tre (noir)
+    glShadeModel(GL_SMOOTH);							// Modï¿½le d'ombrage : lissage de Gouraud
+	glEnable(GL_CULL_FACE);								// Ne traite pas les faces cachï¿½es
 	glEnable(GL_DEPTH_TEST);							// Active le Z-Buffer
 	glDepthFunc(GL_LEQUAL);								// Mode de fonctionnement du Z-Buffer
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	// Active la correction de perspective (pour ombrage, texture, ...)
@@ -196,7 +200,8 @@ void affiche_scene()
 
   z_eye += 0.005;
   point3 neweye(z_eye,10, z_eye);
-  camera.update(neweye, at, up);
+  point3 newat(x_at, y_at, z_at);
+  camera.update(neweye, newat, up);
   camera.set();
 	affiche_paquet( x, y, z, 0);
 
@@ -208,7 +213,7 @@ void affiche_scene()
 	}
 
 
-	glutSwapBuffers();							// Affiche la scène à l'écran (affichage en double buffer)
+	glutSwapBuffers();							// Affiche la scï¿½ne ï¿½ l'ï¿½cran (affichage en double buffer)
 
 }
 
@@ -262,7 +267,7 @@ void keyboard(unsigned char key, int x, int y) {
 		b.y = 0;
 		b.z = 0;
 		balles.push_back(b);
-		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
+		cout << "Balle nï¿½" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
 		break;
 
 	default :
@@ -299,7 +304,7 @@ void idle()
 		if(balles[i].z <= -100)
 		{
 			balles.erase(balles.begin()+i);
-			cout << "Balle n" << i << " détruite !" << endl;
+			cout << "Balle n" << i << " dï¿½truite !" << endl;
 		}
 		balles[i].z-=vitesseBalle;
 	}
@@ -310,13 +315,47 @@ void mouse(int button, int state, int x, int y)
 {
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
+
 		balle b;
 		b.x = camera.eye.x;
 		b.y = camera.eye.y;
 		b.z = camera.eye.z;
 		balles.push_back(b);
-		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
+		cout << "Balle nï¿½" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
 	}
+}
+
+GLvoid callback_motion(int x, int y)
+{
+
+	int w = glutGet( GLUT_WINDOW_WIDTH );
+	int h = glutGet( GLUT_WINDOW_HEIGHT );
+	if(x > w/2)
+	{
+		x_at++;
+		cout << "x++" << endl;
+		glutWarpPointer( w / 2, h / 2 );
+	}
+	else if(x < w/2)
+	{
+		x_at--;
+		cout << "x--" << endl;
+		glutWarpPointer( w / 2, h / 2 );
+	}
+	else if(y < h/2)
+	{
+		y_at++;
+		cout << "y++" << endl;
+		glutWarpPointer( w / 2, h / 2 );
+	}
+	else if(y > h/2)
+	{
+		y_at--;
+		cout << "y--" << endl;
+		glutWarpPointer( w / 2, h / 2 );
+	}
+
+  glutPostRedisplay();
 }
 
 int main(int argc, char **argv) {
@@ -331,6 +370,8 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
 	glutMouseFunc(&mouse);
+  //glutMotionFunc(&callback_motion);
+  glutPassiveMotionFunc(&callback_motion);
 	glutIdleFunc(&idle);
 	glutMainLoop();
 
