@@ -59,6 +59,7 @@ float y = 0;
 float z = 0;
 bool sens = 0;
 float vitesse = 0.005f;
+float vitesseBalle = 0.01f;
 
 struct balle{
 	float x,y,z;
@@ -192,6 +193,7 @@ void affiche_balle( float xp, float yp, float zp, float yr )
 
 void affiche_scene()
 {
+
   z_eye += 0.005;
   point3 neweye(z_eye,10, z_eye);
   camera.update(neweye, at, up);
@@ -199,11 +201,12 @@ void affiche_scene()
   camera.set();
 	affiche_paquet( x, y, z, 0);
 
-	// for(unsigned int i=0; i < balles.size(); i++)
-	// {
-	// 	affiche_balle(balles[i].x, balles[i].y, balles[i].z, 0);
-	// 	//cout << "Balle : X=" << balles[i].x << " | Y=" << balles[i].y << " | Z=" << balles[i].z << endl;
-	// }
+
+	for(unsigned int i=0; i < balles.size(); i++)
+	{
+		affiche_balle(balles[i].x, balles[i].y, balles[i].z, 0);
+		//cout << "Balle : X=" << balles[i].x << " | Y=" << balles[i].y << " | Z=" << balles[i].z << endl;
+	}
 
 
 	glutSwapBuffers();							// Affiche la scène à l'écran (affichage en double buffer)
@@ -258,7 +261,7 @@ void keyboard(unsigned char key, int x, int y) {
 		balle b;
 		b.x = 0;
 		b.y = 0;
-		b.z = -15;
+		b.z = 0;
 		balles.push_back(b);
 		cout << "Balle n°" << nbBalle++ << " | X=" << b.x << " Y=" << b.y << " Z=" << b.z << endl;
 		break;
@@ -299,7 +302,7 @@ void idle()
 			balles.erase(balles.begin()+i);
 			cout << "Balle n" << i << " détruite !" << endl;
 		}
-		balles[i].z+=vitesse;
+		balles[i].z-=vitesseBalle;
 	}
 	glutPostRedisplay();
 }
