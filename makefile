@@ -1,11 +1,11 @@
 #Makefile Linux
-EXEC = bezier
+EXEC = jeu 
 COMPILO = g++
 
 GLUT_INC=
 GLUT_LIBS=-lglut
 GL_INC=
-GL_LIBS= -lGL
+GL_LIBS= -lGL -lGLU -L.
 
 #Chemin d'acces des includes
 CXXINCS =  $(GLUT_INC) $(GL_INC)
@@ -23,13 +23,15 @@ PATH_SRC=.
 #Cree l'executable sous Linux
 all: $(EXEC)
 
-$(EXEC): struct.o squelette_Bezier.o
+$(EXEC): jeu.o struct.o Camera.o
 	$(COMPILO) -o $@ $^ $(LIBS)
 
-struct.o:  $(PATH_SRC)/struct.cpp $(PATH_INC)/struct.h
+jeu.o: $(PATH_SRC)/jeu.cpp 
+	$(COMPILO) -o $@ -c $< $(CXXFLAGS)
+Camera.o:  $(PATH_SRC)/Camera.cpp $(PATH_INC)/Camera.hpp
 	$(COMPILO) -o $@ -c $< $(CXXFLAGS)
 
-squelette_Bézier.o: squelette_Bezier.cpp $(PATH_INC)/struct.h
+struct.o: struct.cpp $(PATH_INC)/struct.h
 	$(COMPILO) -o $@ -c $< $(CXXFLAGS)
 
 #Efface les fichiers .o
